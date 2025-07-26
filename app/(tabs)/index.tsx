@@ -13,39 +13,60 @@ import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import { RefreshCw, Star, Shield } from 'lucide-react-native';
 
+// Get device dimensions
 const { width, height } = Dimensions.get('window');
 
+/**
+ * MembershipCard Component
+ *
+ * A premium membership card with:
+ * - User profile information
+ * - Dynamic QR code for access
+ * - Refresh functionality
+ * - Animated interactions
+ * - Premium styling with gradients
+ */
 export default function MembershipCard() {
-  const [qrValue, setQrValue] = useState('user-id-12345-abcde');
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(1));
-  const [rotateAnim] = useState(new Animated.Value(0));
+  // State management
+  const [qrValue, setQrValue] = useState('user-id-12345-abcde'); // Current QR code value
+  const [isRefreshing, setIsRefreshing] = useState(false); // Loading state for refresh
+  const [fadeAnim] = useState(new Animated.Value(1)); // Animation for QR fade
+  const [rotateAnim] = useState(new Animated.Value(0)); // Animation for refresh icon rotation
 
+  /**
+   * Refresh QR Code
+   *
+   * Handles the QR code refresh process with animations:
+   * 1. Fades out current QR code
+   * 2. Generates new value with timestamp
+   * 3. Fades in new QR code
+   * 4. Rotates refresh icon
+   */
   const refreshQRCode = () => {
     setIsRefreshing(true);
-    
-    // Animate QR code fade out
+
+    // Fade out animation
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 200,
       useNativeDriver: true,
     }).start(() => {
-      // Generate new QR code value with timestamp
+      // Generate new QR value with timestamp
       const timestamp = Date.now();
       const newQrValue = `user-id-12345-abcde-${timestamp}`;
       setQrValue(newQrValue);
-      
-      // Animate QR code fade in
+
+      // Fade in animation
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
       }).start();
-      
+
       setIsRefreshing(false);
     });
 
-    // Rotate refresh icon
+    // Rotation animation
     Animated.timing(rotateAnim, {
       toValue: 1,
       duration: 600,
@@ -55,6 +76,7 @@ export default function MembershipCard() {
     });
   };
 
+  // Interpolate rotation value for smooth spinning
   const rotateInterpolate = rotateAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
@@ -62,15 +84,16 @@ export default function MembershipCard() {
 
   return (
     <View style={styles.container}>
+      {/* Status bar styling */}
       <StatusBar barStyle="light-content" backgroundColor="#0f0f23" />
-      
-      {/* Header */}
+
+      {/* Header Section */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Membership</Text>
         <Text style={styles.headerSubtitle}>Digital Access Card</Text>
       </View>
 
-      {/* Membership Card */}
+      {/* Main Membership Card */}
       <View style={styles.cardContainer}>
         <LinearGradient
           colors={['#667eea', '#764ba2']}
@@ -78,7 +101,7 @@ export default function MembershipCard() {
           end={{ x: 1, y: 1 }}
           style={styles.card}
         >
-          {/* Card Header */}
+          {/* Card Header with membership level */}
           <View style={styles.cardHeader}>
             <View style={styles.cardHeaderLeft}>
               <Text style={styles.cardTitle}>PREMIUM MEMBERSHIP</Text>
@@ -94,7 +117,7 @@ export default function MembershipCard() {
             </View>
           </View>
 
-          {/* Profile Section */}
+          {/* User Profile Section */}
           <View style={styles.profileSection}>
             <View style={styles.profilePicture}>
               <Text style={styles.profileInitials}>AR</Text>
@@ -108,12 +131,7 @@ export default function MembershipCard() {
           {/* QR Code Section */}
           <View style={styles.qrSection}>
             <Text style={styles.qrLabel}>Scan for Access</Text>
-            <Animated.View 
-              style={[
-                styles.qrContainer,
-                { opacity: fadeAnim }
-              ]}
-            >
+            <Animated.View style={[styles.qrContainer, { opacity: fadeAnim }]}>
               <QRCode
                 value={qrValue}
                 size={120}
@@ -124,7 +142,9 @@ export default function MembershipCard() {
                 logoBorderRadius={10}
               />
             </Animated.View>
-            <Text style={styles.qrId}>ID: {qrValue.split('-').slice(-1)[0] || 'abcde'}</Text>
+            <Text style={styles.qrId}>
+              ID: {qrValue.split('-').slice(-1)[0] || 'abcde'}
+            </Text>
           </View>
 
           {/* Card Footer */}
@@ -139,13 +159,18 @@ export default function MembershipCard() {
 
       {/* Refresh Button */}
       <TouchableOpacity
-        style={[styles.refreshButton, isRefreshing && styles.refreshButtonDisabled]}
+        style={[
+          styles.refreshButton,
+          isRefreshing && styles.refreshButtonDisabled,
+        ]}
         onPress={refreshQRCode}
         disabled={isRefreshing}
         activeOpacity={0.8}
       >
         <LinearGradient
-          colors={isRefreshing ? ['#9ca3af', '#6b7280'] : ['#4f46e5', '#7c3aed']}
+          colors={
+            isRefreshing ? ['#9ca3af', '#6b7280'] : ['#4f46e5', '#7c3aed']
+          }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.refreshButtonGradient}
@@ -159,17 +184,19 @@ export default function MembershipCard() {
         </LinearGradient>
       </TouchableOpacity>
 
-      {/* Info Section */}
+      {/* Information Section */}
       <View style={styles.infoSection}>
         <Text style={styles.infoTitle}>How to use your card</Text>
         <Text style={styles.infoText}>
-          Present this QR code at any partner location for instant verification and access to exclusive member benefits.
+          Present this QR code at any partner location for instant verification
+          and access to exclusive member benefits.
         </Text>
       </View>
     </View>
   );
 }
 
+// Stylesheet
 const styles = StyleSheet.create({
   container: {
     flex: 1,
