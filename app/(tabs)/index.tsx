@@ -8,6 +8,7 @@ import {
   StatusBar,
   Animated,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
@@ -83,7 +84,7 @@ export default function MembershipCard() {
   });
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* Status bar styling */}
       <StatusBar barStyle="light-content" backgroundColor="#0f0f23" />
 
@@ -192,7 +193,7 @@ export default function MembershipCard() {
           and access to exclusive member benefits.
         </Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -394,6 +395,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
+    marginBottom: 80,
   },
   infoTitle: {
     fontSize: 16,
